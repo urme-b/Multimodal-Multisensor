@@ -15,7 +15,3 @@ participants. This highlights the need for personalized approaches in psychologi
 
 
 Keywords: IoT, machine learning, multimodal, neurophysiological, multi-sensors, psychometrics
-
-
-
-https://github.com/urme-b/Multimodal-Multisensor/blob/11d227c32401bd18b100416c9ae68f26c8c468e6/KNN.png
