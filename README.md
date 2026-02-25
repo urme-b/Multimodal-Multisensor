@@ -39,7 +39,7 @@ Longitudinal study where 10 adults completed standardized psychology tests acros
 
 | Participant in session | Session in progress |
 |:---:|:---:|
-| ![Data collection session](images/data_collection_session.jpg) | ![Participant testing](images/participant_testing.jpg) |
+| <img src="images/data_collection_session.jpg" width="340" /> | <img src="images/participant_testing.jpg" width="340" /> |
 
 ## How it was done
 
