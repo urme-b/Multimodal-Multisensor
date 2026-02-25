@@ -35,11 +35,11 @@ Longitudinal study where 10 adults completed standardized psychology tests acros
 
 | Hardware and sensors | Setup |
 |:---:|:---:|
-| <img src="images/experimental_setup.jpg" width="340" /> | <img src="images/setup_page_4.jpg" width="340" /> |
+| ![Hardware setup](images/experimental_setup.jpg) | ![Setup](images/setup_page_4.jpg) |
 
 | Participant in session | Session in progress |
 |:---:|:---:|
-| <img src="images/data_collection_session.jpg" width="340" /> | <img src="images/participant_testing.jpg" width="340" /> |
+| ![Data collection session](images/data_collection_session.jpg) | ![Participant testing](images/participant_testing.jpg) |
 
 ## How it was done
 
