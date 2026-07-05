@@ -25,11 +25,13 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -r requirements-dev.txt
+          pip install -e ".[dev]"
 
       - name: Validate committed data and notebooks
         run: pytest tests/ -q
+
+      - name: Verify group summaries regenerate + reconcile
+        run: python pipeline/build_group_summaries.py
 
   security:
     name: Dependency audit (pip-audit)
@@ -68,8 +70,9 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -r requirements-dev.txt
+          pip install -e ".[dev]"
 
       - name: Execute notebooks
-        run: pytest --nbmake --nbmake-timeout=900 case-study group individual
+        # --nbmake-kernel=python3 overrides any embedded kernel name so a clean
+        # checkout runs regardless of the author's local kernel.
+        run: pytest --nbmake --nbmake-kernel=python3 --nbmake-timeout=900 case-study group individual

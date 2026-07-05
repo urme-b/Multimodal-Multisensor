@@ -1,16 +1,21 @@
-# Python >= 3.9
+# Python >= 3.11 (matches .python-version and the CI matrix)
+#
+# Bounded pins: lower bound = tested floor, upper bound = next major, so a future
+# release cannot silently change results (e.g. a scikit-learn KMeans default).
+# The shared analysis code is installable with `pip install -e .` (see pyproject.toml).
+
 # Core data science
-numpy>=1.20.0
-pandas>=1.3.0
-scipy>=1.7.0
+numpy>=1.26,<3
+pandas>=2.0,<3
+scipy>=1.11,<2
 
 # Visualization
-matplotlib>=3.4.0
-seaborn>=0.11.0
+matplotlib>=3.8,<4
+seaborn>=0.13,<0.14
 
 # Machine Learning
-scikit-learn>=1.0.0
+scikit-learn>=1.4,<2
 
 # Jupyter
-jupyter>=1.0.0
-notebook>=6.4.0
+jupyter>=1.0,<2
+notebook>=7.0,<8
