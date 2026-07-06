@@ -45,6 +45,8 @@ def hrv_rolling(
     nn = ibi.where((ibi >= lo) & (ibi <= hi))
     min_p = max(2, window_beats // 3)
     d["sdnn"] = nn.rolling(window_beats, min_periods=min_p).std(ddof=1)
+    # A filtered-out beat voids the two successive differences that span it, so
+    # rmssd may rest on slightly fewer beats than sdnn near an artifact — intended.
     d["rmssd"] = (nn.diff() ** 2).rolling(window_beats, min_periods=min_p).mean() ** 0.5
     return d
 
@@ -75,7 +77,11 @@ def hrv_over_time(
     rows = []
     w = start
     while w < end or not rows:
-        seg = d[(t >= w) & (t < w + window_s)][ibi_col]
+        top = w + window_s
+        # Include the boundary only on the final window, so the last beat at
+        # t == end is counted exactly once and never lost.
+        in_win = (t >= w) & (t <= top if top >= end else t < top)
+        seg = d[in_win][ibi_col]
         rows.append({
             "window_start_s": round(w - start, 3),
             "n_beats": int(len(clean_nn(seg, lo, hi))),
