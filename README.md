@@ -79,6 +79,7 @@ cd Multimodal-Multisensor
 
 python -m venv .venv && source .venv/bin/activate   # Python >= 3.11
 pip install -e ".[dev]"                             # installs deps + the shared `mms` package
+# For a byte-for-byte reproducible install, use the pinned lock: pip install -r requirements.lock
 
 # Regenerate the group-level summaries from committed data + reconciliation report
 python pipeline/build_group_summaries.py
