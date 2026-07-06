@@ -78,8 +78,9 @@ git clone https://github.com/urme-b/Multimodal-Multisensor
 cd Multimodal-Multisensor
 
 python -m venv .venv && source .venv/bin/activate   # Python >= 3.11
-pip install -e ".[dev]"                             # installs deps + the shared `mms` package
-# For a byte-for-byte reproducible install, use the pinned lock: pip install -r requirements.lock
+pip install -e ".[dev,notebooks]"                   # deps + mms + tests + jupyterlab
+# Byte-for-byte reproducible install instead (hashed lock):
+#   pip install -r requirements.lock && pip install -e . --no-deps
 
 # Regenerate the group-level summaries from committed data + reconciliation report
 python pipeline/build_group_summaries.py

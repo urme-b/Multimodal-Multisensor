@@ -42,8 +42,8 @@ File suffixes: `_01/_02/_03` = session 1/2/3; no suffix = baseline/resting.
 **`sed_*.csv`** — eye tracking (raw) · `reltime, datetime, iSensor, headPos.{x,y,z}, headPosQ, headYaw, headPitch, headRoll, headRotQ, gazeSrc.{x,y,z}, gazeDir.{x,y,z}, gazeQ, leftEyeOpen, leftEyeOpenQ, rightEyeOpen, rightEyeOpenQ, pupil, pupilQ`
 - `pupil` — pupil diameter (mm); `leftEyeOpen`/`rightEyeOpen` — eyelid openness.
 
-**`sed_fix_*.csv`** — eye tracking + derived fixations · all `sed_*` columns **plus** `gaze_diff, fixation, fixation_id, duration`
-- `fixation` — bool, sample is part of a fixation; `fixation_id` — fixation index; `duration` — fixation duration; `gaze_diff` — angular gaze change between samples.
+**`sed_fix_*.csv`** — eye tracking + derived fixations · all `sed_*` columns, with `gazeDir.{x,y,z}` renamed to `gaze_{x,y,z}`, **plus** derived `gaze_diff, fixation, fixation_id, duration`
+- `gaze_{x,y,z}` — gaze direction unit vector (renamed from raw `gazeDir.*`); `fixation` — bool, sample is part of a fixation; `fixation_id` — fixation index; `duration` — fixation duration; `gaze_diff` — angular gaze change between samples.
 
 ## Psychometric (`*/psychometric/`)
 
@@ -52,8 +52,10 @@ File suffixes: `_01/_02/_03` = session 1/2/3; no suffix = baseline/resting.
 - `*_modified.csv` — analysis-convenience copies: drop `Type`, add parsed `datetime`. Originals are authoritative.
 - `individual/…_00.csv` uses a `Score` column and a distinct schema (earlier/screening format).
 
-**`QQ.csv` / `QQHRV.csv`** — per-question aggregates joining psychometric + physiology · e.g. `Type, Question, Start Time, End Time, Score, Average Pupil Dilation, Average Left/Right Blink Rate, RMSSD, Sign of Anxiety, Test`
-- `Sign of Anxiety` — derived Yes/No flag (see the generating notebook for the threshold rule).
+Per-question aggregates joining psychometric responses to physiology (individual dataset):
+- **`QQ.csv`** · `Type, Question, Start Time, End Time, Score, Average Pupil Dilation, Average Left Blink Rate, Average Right Blink Rate, Sign of Anxiety, Test` — `Sign of Anxiety` is a derived Yes/No flag (see the generating notebook for the threshold rule).
+- **`QQHRV.csv`** · `Test, Type, Start Time, End Time, Score, RMSSD, SDNN, RMSSD Decrease, SDNN Decrease` — per-question HRV with baseline-relative decrease flags.
+- **`QQ2.csv`** — like `QQ.csv` plus `Pupil Dilation Increase`, `Left/Right Blink Rate Increase`.
 
 ## Summaries (`group_results/`)
 
