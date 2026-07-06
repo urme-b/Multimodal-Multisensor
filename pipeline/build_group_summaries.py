@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Regenerate group summaries from committed per-participant data.
 
-The case-study participant maps to group row **P02**; this reproduces that row
-exactly (original recipe) and also emits an artifact-filtered recipe. The other
-9 participants' raw streams were not released, so their rows are not regenerable
-and are never fabricated. Writes to ``data/group_results/reconstructed/`` only —
-committed data is untouched. Run: ``python pipeline/build_group_summaries.py``.
+The case-study participant maps to group row **P02**; the original recipe
+reproduces its HRV and pupil rows exactly (~1e-13) and its response-duration row
+to ~2e-5 (see the MANIFEST reconciliation), and an artifact-filtered recipe is
+also emitted. The other 9 participants' raw streams were not released, so their
+rows are not regenerable and are never fabricated. Writes to
+``data/group_results/reconstructed/`` only — committed data is untouched.
+Run: ``python pipeline/build_group_summaries.py``.
 """
 from __future__ import annotations
 
@@ -63,6 +65,10 @@ def main() -> int:
         committed_row = committed.loc[
             committed["Participant"] == CASE_STUDY_PARTICIPANT, cols
         ].to_numpy(float).ravel()
+        assert committed_row.size == len(values), (
+            f"expected {len(values)} committed values for {CASE_STUDY_PARTICIPANT} "
+            f"in {metric}, got {committed_row.size} (row missing or duplicated)"
+        )
         max_abs_err = max(abs(a - b) for a, b in zip(values, committed_row))
         reconciliation[metric] = {
             "committed_P02": [round(x, 6) for x in committed_row],
