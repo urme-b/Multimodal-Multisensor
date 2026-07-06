@@ -5,16 +5,25 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
+_NAN_ICC = {"icc": float("nan"), "ci95": (float("nan"), float("nan")),
+            "F": float("nan")}
+
 
 def icc1(data) -> dict:
     """ICC(1,1) one-way random-effects reliability with a 95% CI.
 
     ``data`` has shape (n_subjects, k_ratings) — here participants × sessions.
-    Returns ``icc``, ``ci95``, ``n``, ``k``, ``F`` (Shrout & Fleiss 1979).
+    Returns ``icc``, ``ci95``, ``n``, ``k``, ``F`` (Shrout & Fleiss 1979); the
+    values are NaN for degenerate input (fewer than 2 subjects or ratings).
     """
     x = np.asarray(data, dtype=float)
+    if x.ndim != 2 or x.shape[1] < 2:
+        return {**_NAN_ICC, "n": 0, "k": 0}
     x = x[~np.isnan(x).any(axis=1)]
     n, k = x.shape
+    if n < 2:
+        return {**_NAN_ICC, "n": int(n), "k": int(k)}
+
     grand = x.mean()
     ms_between = k * ((x.mean(axis=1) - grand) ** 2).sum() / (n - 1)
     ms_within = ((x - x.mean(axis=1, keepdims=True)) ** 2).sum() / (n * (k - 1))
@@ -36,16 +45,24 @@ def icc1(data) -> dict:
 
 
 def benjamini_hochberg(pvals) -> np.ndarray:
-    """Benjamini-Hochberg FDR-adjusted p-values, in the input order."""
+    """Benjamini-Hochberg FDR-adjusted p-values, in the input order.
+
+    NaN inputs — tests that never validly ran (e.g. a constant column) — are
+    excluded from the comparison count ``m`` and returned as NaN rather than
+    collapsing the rest of the vector.
+    """
     p = np.asarray(pvals, dtype=float)
-    m = len(p)
-    if m == 0:
-        return p
-    order = np.argsort(p)
-    adj = p[order] * m / np.arange(1, m + 1)
-    adj = np.minimum.accumulate(adj[::-1])[::-1]
-    out = np.empty(m)
-    out[order] = np.clip(adj, 0, 1)
+    out = np.full(p.shape, np.nan)
+    valid = ~np.isnan(p)
+    pv = p[valid]
+    m = pv.size
+    if m:
+        order = np.argsort(pv)
+        adj = pv[order] * m / np.arange(1, m + 1)
+        adj = np.minimum.accumulate(adj[::-1])[::-1]
+        tmp = np.empty(m)
+        tmp[order] = np.clip(adj, 0, 1)
+        out[valid] = tmp
     return out
 
 
