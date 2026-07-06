@@ -3,7 +3,7 @@
     import mms
     ibi = mms.io.load_ibi(1)
     series = mms.hrv.hrv_over_time(ibi)   # time-resolved SDNN/RMSSD
-    rel = mms.stats.icc1(sdnn_matrix)     # reliability with a 95% CI
+    res = mms.stats.icc1(sdnn_matrix)     # {'icc': ..., 'ci95': (lo, hi), ...}
 
 Not installed? The package sits at the repo root, so a notebook can reach it with
 ``sys.path.insert(0, str(pathlib.Path.cwd().parent)); import mms``.

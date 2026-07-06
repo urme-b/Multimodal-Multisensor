@@ -8,8 +8,16 @@ import pandas as pd
 from . import paths
 
 
+_SOURCES = {"case-study": paths.CASE_STUDY, "individual": paths.INDIVIDUAL}
+
+
 def _base(source: str) -> Path:
-    return paths.CASE_STUDY if source == "case-study" else paths.INDIVIDUAL
+    try:
+        return _SOURCES[source]
+    except KeyError:
+        raise ValueError(
+            f"unknown source {source!r}; expected one of {sorted(_SOURCES)}"
+        ) from None
 
 
 def load_ibi(session: int, *, source: str = "case-study") -> pd.DataFrame:
@@ -46,7 +54,6 @@ def load_group_summary(metric: str) -> pd.DataFrame:
     return pd.read_csv(paths.GROUP_RESULTS / f"{metric}.csv")
 
 
-def parse_datetime(series: pd.Series, utc: bool = True) -> pd.Series:
+def parse_datetime(series: pd.Series) -> pd.Series:
     """Parse a stream datetime column to tz-naive timestamps."""
-    out = pd.to_datetime(series, utc=utc, errors="coerce")
-    return out.dt.tz_convert(None) if utc else out
+    return pd.to_datetime(series, utc=True, errors="coerce").dt.tz_convert(None)
