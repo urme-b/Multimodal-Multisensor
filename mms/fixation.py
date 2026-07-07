@@ -1,15 +1,7 @@
-"""Eye-tracking metrics from the processed 'sed_fix' streams."""
+"""Pupil-variability metric from the processed 'sed_fix' eye-tracking streams."""
 from __future__ import annotations
 
 import pandas as pd
-
-
-def fixation_durations(sed: pd.DataFrame) -> pd.Series:
-    """Duration of each distinct fixation (one value per ``fixation_id``)."""
-    if "fixation" not in sed.columns or "duration" not in sed.columns:
-        return pd.Series(dtype=float)
-    fx = sed[sed["fixation"] == True]  # noqa: E712 - explicit boolean-column match
-    return fx.groupby("fixation_id")["duration"].max().dropna()
 
 
 def pupil_std(sed: pd.DataFrame, quality_min: float = 0.5) -> float:
